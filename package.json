@@ -25,7 +25,8 @@
   },
   "manifest": {
     "host_permissions": [
-      "https://*/*"
+        "https://linkedin.com/*",
+        "https://*.linkedin.com/*"
     ],
     "permissions": [
       "storage",
