@@ -3,19 +3,31 @@ import { useState, useEffect } from "react"
 function IndexPopup() {
   const [isBlocking, setIsBlocking] = useState(true)
   const [currentUrl, setCurrentUrl] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Get current tab URL
+    // Get current tab URL and load saved settings
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]?.url) {
         setCurrentUrl(tabs[0].url)
       }
+    })
+
+    // Load the blocking state from storage
+    chrome.storage.sync.get(['blockingEnabled'], (result) => {
+      setIsBlocking(result.blockingEnabled ?? true)
+      setIsLoading(false)
     })
   }, [])
 
   const toggleBlocking = async () => {
     const newState = !isBlocking
     setIsBlocking(newState)
+
+    // Save the new state to storage
+    chrome.storage.sync.set({ blockingEnabled: newState }, () => {
+      console.log('Blocking state saved:', newState)
+    })
 
     // Send message to content script
     try {
@@ -32,6 +44,18 @@ function IndexPopup() {
   }
 
   const isLinkedIn = currentUrl.includes('linkedin.com')
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          padding: 16,
+          minWidth: 300
+        }}>
+        <p>Loading...</p>
+      </div>
+    )
+  }
 
   return (
     <div

@@ -1,15 +1,18 @@
 // Content script for DOM manipulation
 console.log("Block LinkedIn extension loaded")
 
-let currentlyBlocking = false;
-
 // Example: Hide LinkedIn feed elements
 function blockLinkedInDistractions() {
-  const feed = document.querySelector('[data-finite-scroll-hotkey-context="FEED"]') as HTMLElement
-  if (feed) {
-    feed.style.display = 'none'
-    console.log('LinkedIn feed hidden')
-  }
+    chrome.storage.sync.get(['blockingEnabled'], (result) => {
+        const currentlyBlocking = result.blockingEnabled ?? true;
+        if (currentlyBlocking) {
+        const feed = document.querySelector('[data-finite-scroll-hotkey-context="FEED"]') as HTMLElement
+        if (feed) {
+            feed.style.display = 'none'
+            console.log('LinkedIn feed hidden')
+        }
+      }
+  })
 }
 
 // Run when page loads
