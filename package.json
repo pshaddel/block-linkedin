@@ -28,7 +28,8 @@
       "https://*/*"
     ],
     "permissions": [
-      "storage"
+      "storage",
+      "activeTab"
     ]
   }
 }
