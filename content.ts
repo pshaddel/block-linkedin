@@ -7,20 +7,40 @@ function shouldBlockToday(selectedDays: number[]): boolean {
   return selectedDays[today] === 1
 }
 
+// Check if current time should be blocked based on time ranges
+function shouldBlockNow(selectedDays: number[], timeBlocking: any): boolean {
+  // Check day (existing logic)
+  const dayBlocked = shouldBlockToday(selectedDays)
+
+  // Check time (new logic)
+  let timeBlocked = true // Default if time blocking disabled
+  if (timeBlocking?.enabled && timeBlocking?.ranges) {
+    const now = new Date()
+    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+
+    timeBlocked = timeBlocking.ranges.some((range: any) =>
+      range.enabled && currentTime >= range.start && currentTime <= range.end
+    )
+  }
+
+  return dayBlocked && timeBlocked
+}
+
 // Example: Hide LinkedIn feed elements
 function blockLinkedInDistractions() {
-  chrome.storage.sync.get(['blockingEnabled', 'selectedDays'], (result) => {
+  chrome.storage.sync.get(['blockingEnabled', 'selectedDays', 'timeBlocking'], (result) => {
         const currentlyBlocking = result.blockingEnabled ?? true;
     const selectedDays = result.selectedDays ?? [1, 1, 1, 1, 1, 1, 1];
+    const timeBlocking = result.timeBlocking ?? { enabled: false, ranges: [] };
 
-    if (currentlyBlocking && shouldBlockToday(selectedDays)) {
+    if (currentlyBlocking && shouldBlockNow(selectedDays, timeBlocking)) {
         const feed = document.querySelector('[data-finite-scroll-hotkey-context="FEED"]') as HTMLElement
         if (feed) {
             feed.style.display = 'none'
             console.log('LinkedIn feed hidden')
         }
       } else {
-        // Show feed if blocking is disabled or today is not a blocked day
+      // Show feed if blocking is disabled or today is not a blocked day or time
         const feed = document.querySelector('[data-finite-scroll-hotkey-context="FEED"]') as HTMLElement
         if (feed) {
           feed.style.display = ''
@@ -60,6 +80,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === 'updateDays') {
     // Re-evaluate blocking when days are updated
+    blockLinkedInDistractions()
+    sendResponse({ success: true })
+  }
+
+  if (message.action === 'updateTime') {
+    // Re-evaluate blocking when time settings are updated
     blockLinkedInDistractions()
     sendResponse({ success: true })
   }

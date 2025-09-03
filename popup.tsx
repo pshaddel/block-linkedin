@@ -7,6 +7,10 @@ function IndexPopup() {
   const [currentUrl, setCurrentUrl] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [selectedDays, setSelectedDays] = useState<number[]>([1, 1, 1, 1, 1, 1, 1]) // Default: All days enabled
+  const [timeBlocking, setTimeBlocking] = useState({
+    enabled: false,
+    ranges: [{ start: "09:00", end: "17:00", enabled: true }]
+  })
 
   useEffect(() => {
     // Get current tab URL and load saved settings
@@ -17,9 +21,10 @@ function IndexPopup() {
     })
 
     // Load the blocking state from storage
-    chrome.storage.sync.get(['blockingEnabled', 'selectedDays'], (result) => {
+    chrome.storage.sync.get(['blockingEnabled', 'selectedDays', 'timeBlocking'], (result) => {
       setIsBlocking(result.blockingEnabled ?? true)
       setSelectedDays(result.selectedDays ?? [1, 1, 1, 1, 1, 1, 1])
+      setTimeBlocking(result.timeBlocking ?? { enabled: false, ranges: [{ start: "09:00", end: "17:00", enabled: true }] })
       setIsLoading(false)
     })
   }, [])
@@ -79,6 +84,61 @@ function IndexPopup() {
   const getDayName = (index: number) => {
     const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'] // Sun, Mon, Tue, Wed, Thu, Fri, Sat
     return days[index]
+  }
+
+  const toggleTimeBlocking = () => {
+    const newTimeBlocking = { ...timeBlocking, enabled: !timeBlocking.enabled }
+    setTimeBlocking(newTimeBlocking)
+
+    // Save to storage
+    chrome.storage.sync.set({ timeBlocking: newTimeBlocking }, () => {
+      console.log('Time blocking settings saved:', newTimeBlocking)
+    })
+
+    // Send updated settings to content script if on LinkedIn
+    if (isLinkedIn) {
+      try {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          if (tabs[0]?.id) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+              action: 'updateTime',
+              timeBlocking: newTimeBlocking
+            })
+          }
+        })
+      } catch (error) {
+        console.error('Error sending time update to content script:', error)
+      }
+    }
+  }
+
+  const updateTimeRange = (start: string, end: string) => {
+    const newTimeBlocking = {
+      ...timeBlocking,
+      ranges: [{ start, end, enabled: true }]
+    }
+    setTimeBlocking(newTimeBlocking)
+
+    // Save to storage
+    chrome.storage.sync.set({ timeBlocking: newTimeBlocking }, () => {
+      console.log('Time range updated:', newTimeBlocking)
+    })
+
+    // Send updated settings to content script if on LinkedIn
+    if (isLinkedIn) {
+      try {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          if (tabs[0]?.id) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+              action: 'updateTime',
+              timeBlocking: newTimeBlocking
+            })
+          }
+        })
+      } catch (error) {
+        console.error('Error sending time update to content script:', error)
+      }
+    }
   }
 
   const isLinkedIn = currentUrl.includes('linkedin.com')
@@ -176,6 +236,62 @@ function IndexPopup() {
             <p style={{ fontSize: '10px', color: '#888', textAlign: 'center', marginTop: '4px' }}>
               S=Sunday, M=Monday, T=Tuesday, W=Wednesday, T=Thursday, F=Friday, S=Saturday
             </p>
+          </div>
+
+          {/* Time-based blocking section */}
+          <div style={{ marginTop: '16px', borderTop: '1px solid #eee', paddingTop: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <p style={{ fontSize: '14px', fontWeight: 'bold', margin: 0 }}>
+                Time-based blocking:
+              </p>
+              <button
+                onClick={toggleTimeBlocking}
+                style={{
+                  padding: '4px 8px',
+                  fontSize: '12px',
+                  backgroundColor: timeBlocking.enabled ? '#007bff' : '#6c757d',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                {timeBlocking.enabled ? 'ON' : 'OFF'}
+              </button>
+            </div>
+
+            {timeBlocking.enabled && (
+              <div style={{ marginTop: '8px' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center' }}>
+                  <input
+                    type="time"
+                    value={timeBlocking.ranges[0]?.start || "09:00"}
+                    onChange={(e) => updateTimeRange(e.target.value, timeBlocking.ranges[0]?.end || "17:00")}
+                    style={{
+                      padding: '4px',
+                      fontSize: '12px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px'
+                    }}
+                  />
+                  <span style={{ fontSize: '12px', color: '#666' }}>to</span>
+                  <input
+                    type="time"
+                    value={timeBlocking.ranges[0]?.end || "17:00"}
+                    onChange={(e) => updateTimeRange(timeBlocking.ranges[0]?.start || "09:00", e.target.value)}
+                    style={{
+                      padding: '4px',
+                      fontSize: '12px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px'
+                    }}
+                  />
+                </div>
+                <p style={{ fontSize: '10px', color: '#888', textAlign: 'center', marginTop: '4px' }}>
+                  Only block during these hours
+                </p>
+              </div>
+            )}
           </div>
 
           <p style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
