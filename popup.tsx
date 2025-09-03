@@ -161,11 +161,11 @@ function IndexPopup() {
         padding: 16,
         minWidth: 300
       }}>
-      <h2>Block LinkedIn Distractions</h2>
+      {/* <h2>Block LinkedIn Distractions</h2> */}
 
       {isLinkedIn ? (
         <div>
-          <p style={{ color: 'green' }}>✓ LinkedIn detected</p>
+          {/* <p style={{ color: 'green' }}>✓ LinkedIn detected</p> */}
 
           {/* Status Image */}
           <div style={{ textAlign: 'center', marginBottom: '16px' }}>
@@ -199,7 +199,8 @@ function IndexPopup() {
               borderRadius: '4px',
               cursor: 'pointer',
               fontSize: '14px',
-              marginBottom: '16px'
+              marginBottom: '16px',
+              width: '100%'
             }}
           >
             {isBlocking ? 'Disable Blocking' : 'Enable Blocking'}
@@ -233,9 +234,7 @@ function IndexPopup() {
                 </button>
               ))}
             </div>
-            <p style={{ fontSize: '10px', color: '#888', textAlign: 'center', marginTop: '4px' }}>
-              S=Sunday, M=Monday, T=Tuesday, W=Wednesday, T=Thursday, F=Friday, S=Saturday
-            </p>
+
           </div>
 
           {/* Time-based blocking section */}
