@@ -1,4 +1,4 @@
-# 🚫 Block LinkedIn
+# 🚫 [Block LinkedIn](https://chromewebstore.google.com/detail/block-linkedin/hlfpncbokpiijklckchhidbbkkadpcfg)
 
 | Distracted | Focused |
 |:---:|:---:|
