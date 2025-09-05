@@ -1,6 +1,21 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# 🚫 Block LinkedIn
 
-## Getting Started
+| Distracted | Focused |
+|:---:|:---:|
+| <img src="assets/distracted.jpeg" alt="Distracted" width="280" /> | <img src="assets/concentration.jpeg" alt="Concentration Mode" width="280" /> |
+
+A Chrome extension designed to help you stay focused and avoid LinkedIn distractions during work hours. Take control of your productivity and maintain concentration on what matters most.
+
+## ✨ Features
+
+- 🔒 **Smart Blocking**: Automatically blocks LinkedIn to prevent mindless scrolling
+- ⚡ **One-Click Toggle**: Easy enable/disable functionality through the popup interface
+- 🎯 **Distraction-Free**: Helps maintain focus during important work sessions
+- 🔧 **Customizable**: Adjust settings to match your workflow needs
+
+## 🚀 Getting Started
+
+### Development
 
 First, run the development server:
 
@@ -10,15 +25,25 @@ pnpm dev
 npm run dev
 ```
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
+Open your browser and load the appropriate development build from `build/chrome-mv3-dev`.
 
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
+### Project Structure
 
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
+- `popup.tsx` - Extension popup interface for toggling blocking
+- `content.ts` - Content script that handles LinkedIn page blocking
+- `background.ts` - Service worker for extension lifecycle management
+- `assets/` - Icons and visual assets for the extension
 
-## Making production build
+## 🔧 Installation
 
-Run the following:
+1. Clone this repository
+2. Run `pnpm install` to install dependencies
+3. Run `pnpm dev` for development or `pnpm build` for production
+4. Load the `build/chrome-mv3-dev` (or `chrome-mv3-prod`) folder in Chrome's extension manager
+
+## 📦 Building for Production
+
+Create a production-ready extension bundle:
 
 ```bash
 pnpm build
@@ -26,8 +51,19 @@ pnpm build
 npm run build
 ```
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
+This creates an optimized bundle in `build/chrome-mv3-prod` ready for distribution.
 
-## Submit to the webstores
+## 🎨 Visual States
 
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+The extension dynamically updates its icon to reflect the current blocking status:
+
+- 🔴 **Blocking Active**: LinkedIn access is restricted
+- 🟢 **Blocking Disabled**: Normal browsing allowed
+
+## 📱 Publishing
+
+Ready to publish your extension? Use the built-in [bpp](https://bpp.browser.market) GitHub action for automated submission to browser stores. Follow the [Plasmo deployment guide](https://docs.plasmo.com/framework/workflows/submit) for detailed instructions.
+
+---
+
+Built with ❤️ using [Plasmo Framework](https://docs.plasmo.com/) - The modern browser extension development framework.
