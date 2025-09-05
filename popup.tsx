@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import concentrationImg from "data-base64:~assets/concentration.png"
-import distractedImg from "data-base64:~assets/distracted.png"
+import concentrationImg from "data-base64:~assets/concentration.jpeg"
+import distractedImg from "data-base64:~assets/distracted.jpeg"
 
 function IndexPopup() {
   const [isBlocking, setIsBlocking] = useState(true)
@@ -173,20 +173,20 @@ function IndexPopup() {
               src={isBlocking ? concentrationImg : distractedImg}
               alt={isBlocking ? "Focused and concentrated" : "Distracted"}
               style={{
-                width: '80px',
-                height: '80px',
+                width: '140px',
+                height: '140px',
                 borderRadius: '8px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                // boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
               }}
             />
-            <p style={{
+            {/* <p style={{
               fontSize: '12px',
               color: '#666',
               marginTop: '8px',
               fontStyle: 'italic'
             }}>
-              {isBlocking ? "Stay focused! 🎯" : "Distractions enabled 📱"}
-            </p>
+              {isBlocking ? "Stay focused!" : "Distractions enabled"}
+            </p> */}
           </div>
 
           <button
