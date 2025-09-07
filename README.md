@@ -2,7 +2,7 @@
 
 | Distracted | Focused |
 |:---:|:---:|
-| <img src="assets/distracted.jpeg" alt="Distracted" width="280" /> | <img src="assets/concentration.jpeg" alt="Concentration Mode" width="280" /> |
+| <img src="assets/distracted.png" alt="Distracted" width="280" /> | <img src="assets/focused.png" alt="Concentration Mode" width="280" /> |
 
 A Chrome extension designed to help you stay focused and avoid LinkedIn distractions during work hours. Take control of your productivity and maintain concentration on what matters most.
 
