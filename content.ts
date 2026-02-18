@@ -34,14 +34,15 @@ function blockLinkedInDistractions() {
     const timeBlocking = result.timeBlocking ?? { enabled: false, ranges: [] };
 
     if (currentlyBlocking && shouldBlockNow(selectedDays, timeBlocking)) {
-        const feed = document.querySelector('[data-finite-scroll-hotkey-context="FEED"]') as HTMLElement
+      // data-testid="mainFeed"
+      const feed = document.querySelector('[data-testid="mainFeed"]') as HTMLElement
         if (feed) {
             feed.style.display = 'none'
             console.log('LinkedIn feed hidden')
         }
       } else {
       // Show feed if blocking is disabled or today is not a blocked day or time
-        const feed = document.querySelector('[data-finite-scroll-hotkey-context="FEED"]') as HTMLElement
+      const feed = document.querySelector('[data-testid="mainFeed"]') as HTMLElement
         if (feed) {
           feed.style.display = ''
           console.log('LinkedIn feed shown')
